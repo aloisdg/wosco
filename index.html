@@ -1,0 +1,321 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7 Wonders Scoring Card</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            display: grid;
+            grid-template-rows: auto 1fr;
+        }
+
+        header {
+            font-size: 2rem;
+            padding: 0.5rem;
+            color: white;
+            background: #1a1a1a;
+            grid-row: 1;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        header>div:last-child {
+            display: flex;
+        }
+
+        main {
+            grid-row: 2;
+            width: 100%;
+            display: grid;
+            grid-template-rows: repeat(9, 1fr);
+            grid-template-columns: 1fr;
+            overflow-y: scroll;
+        }
+
+        main>.row {
+            display: flex;
+        }
+
+        .black {
+            background-color: #1a1a1a;
+        }
+
+        .red {
+            background-color: red;
+        }
+
+        .lightred {
+            background-color: rgba(255, 0, 0, 0.2);
+            color: rgba(255, 0, 0, 1);
+        }
+
+        .coin {
+            background-color: goldenrod;
+        }
+
+        .lightgold {
+            background-color: rgba(201, 149, 38, 0.2);
+            color: goldenrod;
+
+        }
+
+        .wonder {
+            background-color: #cccccc;
+            /* background-image emoji svg?; */
+        }
+
+        .lightgrey {
+            background-color: hsla(0, 0%, 80%, 0.2);
+            color: #aaaaaa;
+        }
+
+        .blue {
+            background-color: royalblue;
+        }
+
+        .lightblue {
+            background-color: hsla(240, 50%, 50%, 0.2);
+            color: royalblue;
+        }
+
+        .yellow {
+            background-color: rgb(184, 153, 53);
+        }
+
+        .lightyellow {
+            background-color: hsla(60, 50%, 50%, 0.2);
+            color: rgb(184, 153, 53);
+        }
+
+        .purple {
+            background-color: purple;
+        }
+
+        .lightpurple {
+            background-color: hsla(280, 50%, 50%, 0.2);
+            color: purple;
+
+        }
+
+        .green {
+            background-color: green;
+        }
+
+        .lightgreen {
+            background-color: hsla(120, 50%, 50%, 0.2);
+            color: green;
+        }
+
+        .column {
+            width: 80px;
+        }
+
+        .column>input {
+            width: 80px;
+            height: 100%;
+            padding: 0.5rem;
+        }
+
+        input[type=number] {
+            text-align: right;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 2rem;
+            -webkit-appearance: none;
+            /* appearance: none; */
+
+            -moz-appearance: textfield;
+            border: 0;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=text] {
+            font-size: 1.5rem;
+        }
+
+        .total {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .text-l {
+            font-size: 1.5rem;
+        }
+
+        .text-xl {
+            font-size: 2rem;
+        }
+
+        .center {
+            display: grid;
+            place-items: center;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .h-full {
+            height: 100%;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .px-2 {
+            padding: 0 1rem;
+        }
+
+        .px-3 {
+            padding: 0 2rem;
+        }
+
+        .text-mono {
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        main>.row:first-child {
+            border-bottom: #1a1a1a 3px solid;
+        }
+
+        main>.row:last-child {
+            border-top: #1a1a1a 3px solid;
+        }
+
+        input[type=number]:focus{
+            border: 3px currentColor solid;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div>Wosco</div>
+        <div>
+            <button id="reset" class="px-2 text-xl text-mono" type="button">r</button>
+            <button id="addPlayer" class="px-3 text-xl text-mono" type="button">+</button>
+        </div>
+    </header>
+    <main>
+        <div class="row">
+            <div class="column black"></div>
+        </div>
+        <div class="row">
+            <div class="column red"></div>
+        </div>
+        <div class="row">
+            <!-- https://emojipedia.org/coin/ -->
+            <!-- <div class="column coin center text-l">🪙</div> -->
+            <div class="column coin center text-l">$</div>
+            <!-- ₿ -->
+        </div>
+        <div class="row">
+            <div class="column wonder center text-l">🏛️</div>
+        </div>
+        <div class="row">
+            <div class="column blue"></div>
+        </div>
+        <div class="row">
+            <div class="column yellow"></div>
+        </div>
+        <div class="row">
+            <div class="column purple"></div>
+        </div>
+        <div class="row">
+            <div class="column green"></div>
+        </div>
+        <div class="row">
+            <div class="column total center text-xl">Σ</div>
+        </div>
+    </main>
+
+    <script>
+        const addPlayerButton = document.querySelector("#addPlayer");
+        const resetButton = document.querySelector("#reset");
+        const backgroundColors = ["lightred", "lightgold",
+            "lightgrey", "lightblue", "lightyellow",
+            "lightpurple", "lightgreen"];
+        const names = ["Kim", "Aloïs", "Cléo", "César", "Scipio", "Alix", "Rose"];
+
+        function buildCell(rowsLength, i, position) {
+            const input = document.createElement('input');
+            if (i == 0) {
+                input.value = names[position % names.length];
+                input.type = "text";
+                input.classList.add("text-right");
+                return input;
+            }
+
+            input.value = 0;
+            input.type = "number";
+            if (i + 1 == rowsLength) {
+                input.setAttribute('id', "sum-" + position)
+                return input;
+            }
+
+            input.classList.add(backgroundColors[i - 1]);
+            input.onchange = function (event) {
+                const target = event.target;
+                target.value = !target.value ? 0 : target.value;
+                document.querySelector('#sum-' + position).value =
+                    parseInt(document.querySelector('#sum-' + position).value) + parseInt(target.value);
+            }
+            return input;
+        }
+
+        function createPlayer() {
+            const position = document.querySelector(".row").children.length - 1;
+            const rows = [...document.querySelectorAll('.row')];
+            rows.forEach((row, i) => {
+                const column = document.createElement('div');
+                column.classList.add('column', 'cell');
+                // column.classList.add('cell');
+                const input = buildCell(rows.length, i, position);
+                column.appendChild(input);
+                row.appendChild(column);
+            })
+        }
+
+        function reset() {
+            const shouldReset = confirm("Reset the board.")
+            if (!shouldReset) {
+                return;
+            }
+
+            [...document.querySelectorAll('.cell')].forEach(x => {
+                x.parentElement.removeChild(x);
+            });
+
+            init();
+        }
+
+        function init() {
+            createPlayer();
+            createPlayer();
+        }
+
+        init();
+        addPlayerButton.onclick = createPlayer;
+        resetButton.onclick = reset;
+    </script>
+</body>
+
+</html>
